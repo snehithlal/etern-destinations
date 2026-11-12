@@ -4,7 +4,7 @@ A modern, mobile-first cottage website for Wayanad, Kerala. Built with **Astro, 
 
 ## Start here
 
-Requires **Node.js 22.23.4+** (Node 24 LTS recommended) and npm.
+Requires **Node.js 26.13.1+** (Node 26 LTS) and npm.
 
 ```sh
 npm ci
