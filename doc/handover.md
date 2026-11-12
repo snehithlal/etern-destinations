@@ -14,7 +14,7 @@ Contact forms, real-time availability, payment, guest accounts and OTA synchroni
 
 ## Developer handover
 
-1. Use Node 24 LTS and `npm ci`.
+1. Follow the README setup for either nvm (`nvm install` and `nvm use`) or asdf (`asdf install`). Both version files pin Node 26.13.1 LTS. Then run `npm ci`.
 2. Copy `.env.example` to `.env` for local configuration; retain preview mode while developing.
 3. Run `npm run dev`.
 4. Read `architecture.md` before changing URL generation, metadata or image handling.

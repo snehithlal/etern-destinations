@@ -8,7 +8,7 @@
 | Install | `npm ci` |
 | Build | `npm run build` |
 | Output | `dist` |
-| Node | 24 LTS (minimum 22.23.4) |
+| Node | 26.13.1 LTS (see `.nvmrc`) |
 | Runtime adapter | None; static output |
 
 Build variables:
@@ -40,6 +40,8 @@ No Workers adapter or database is needed. A normal Phase 1 site targets the free
 3. Set the build variables separately for production and preview.
 4. Add the custom domain and verify HTTPS.
 5. Follow the same launch checklist.
+
+Select Node 26.x in Vercel build settings. Vercel manages minor/patch updates within that major; the local and GitHub Actions version is pinned in `.nvmrc`.
 
 Static Astro requires no Vercel adapter. Vercel Hobby is restricted to personal/non-commercial use; this cottage business should use a suitable paid plan. Do not select Hobby simply because the code is static.
 

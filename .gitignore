@@ -1,24 +1,45 @@
-# Dependencies
+# Installed dependencies
 node_modules/
 
-# Astro and build output
+# Generated site and tool caches
 dist/
 .astro/
+.cache/
+.vite/
+.vercel/
+.wrangler/
 
-# Playwright
-playwright-report/
-test-results/
-
-# Local environment variables
+# Local environment settings; keep the documented template
 .env
 .env.*
 !.env.example
 
-# Logs
+# Logs and temporary files
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.tsbuildinfo
+*.tmp
+*.swp
+*.swo
+*~
 
-# macOS
+# Test and coverage output
+playwright-report/
+playwright/.cache/
+test-results/
+blob-report/
+coverage/
+.nyc_output/
+
+# Personal editor and operating-system files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 .DS_Store
+._*
+Thumbs.db
+Desktop.ini

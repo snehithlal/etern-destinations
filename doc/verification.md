@@ -51,3 +51,16 @@ npm run build
 ```
 
 For a sandbox that blocks home-directory telemetry preferences, prefix Astro commands with `ASTRO_TELEMETRY_DISABLED=1`. Browsers for this verification were installed under `/private/tmp/etern-playwright`; set `PLAYWRIGHT_BROWSERS_PATH` to that path only when using those local test installations.
+
+## Node 26 development setup update — 12 November 2026
+
+The project now pins Node 26.13.1 LTS in `.nvmrc`; package engine metadata and GitHub Actions are aligned with it. The earlier browser results above remain the original Node 24 verification record.
+
+Rechecked under the official Node 26.13.1 binary with npm 11.20.0:
+
+- Astro/TypeScript: 0 errors, 0 warnings, 0 hints.
+- Production static build: passed.
+- Generated-page tests: 8 passed.
+- Git ignore checks: local env files, dependencies, build output, hosting caches, logs and test output are ignored; source, README, handover docs, lockfile, `.nvmrc` and `.env.example` remain trackable.
+
+Node was downloaded to a temporary validation directory and its SHA-256 was checked against the official release checksum. No global Node installation was changed, and no development or preview server was started for this update. Browser tests were not rerun for these documentation/runtime configuration changes.
