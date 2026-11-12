@@ -1,0 +1,34 @@
+---
+import Brand from './Brand.astro';
+import { nav, href, site } from '../data/site';
+import { ArrowUpRight, Menu, X } from '@lucide/astro';
+const { overlay = false } = Astro.props;
+---
+<header class:list={['site-header', { 'header-overlay': overlay }]}>
+  <div class="header-inner">
+    <Brand />
+    <nav aria-label="Main navigation" class="desktop-nav">
+      {nav.map(item => <a href={href(item.path)} aria-current={Astro.url.pathname === href(item.path) ? 'page' : undefined}>{item.label}</a>)}
+    </nav>
+    <a class="button header-cta" href={site.bookingUrl || href('/contact/')}>{site.bookingUrl ? 'Book your stay' : 'Plan your stay'}<ArrowUpRight size={16}/></a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu"><Menu class="menu-open"/><X class="menu-close"/></button>
+  </div>
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden>
+    <a href={href('/')}>Home</a>
+    {nav.map(item => <a href={href(item.path)}>{item.label}</a>)}
+    <a href={href('/contact/')}>Plan your stay <ArrowUpRight size={18}/></a>
+  </nav>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const menu = document.querySelector<HTMLElement>('#mobile-nav');
+  function closeMenu() { toggle?.setAttribute('aria-expanded', 'false'); toggle?.setAttribute('aria-label', 'Open menu'); if (menu) menu.hidden = true; }
+  toggle?.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    toggle.setAttribute('aria-label', expanded ? 'Open menu' : 'Close menu');
+    if (menu) menu.hidden = expanded;
+  });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') { closeMenu(); toggle.focus(); } });
+  matchMedia('(min-width: 900px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
+</script>

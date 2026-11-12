@@ -1,0 +1,5 @@
+---
+import { href, site } from '../data/site';
+import { ArrowUpRight } from '@lucide/astro';
+---
+<section class="stay-cta"><div class="container cta-inner"><div><span class="eyebrow">Leave a little room for quiet</span><h2>The hills are calling.<br/><em>Take your time answering.</em></h2></div><a class="button button-light" href={site.bookingUrl || href('/contact/')}>{site.bookingUrl ? 'Check availability' : 'Plan your stay'}<ArrowUpRight size={18}/></a></div></section>

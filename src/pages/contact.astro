@@ -1,0 +1,18 @@
+---
+import { MapPin, ArrowUpRight, MessageCircle, Mail, Phone } from '@lucide/astro';
+import Layout from '../layouts/Layout.astro';
+import PageHeading from '../components/PageHeading.astro';
+import { site, contactLinks, href } from '../data/site';
+const contactIcon = (label: string) => label === 'Call us' ? Phone : label === 'Email us' ? Mail : MessageCircle;
+---
+<Layout title="Plan your stay" description="Get in touch with Etern Destinations to plan a whole-cottage stay in Wayanad. Confirm availability, guest requirements, location and booking terms with the host.">
+  <PageHeading label="LET’S MAKE A LITTLE SPACE" title="Your slower days start here." description="Tell us when you’d like to visit, who’s coming along, and what would make your stay feel right."/>
+  <section class="container contact-layout">
+    <div class="contact-panel"><span class="eyebrow">GET IN TOUCH</span><h2>A conversation,<br/><em>then a getaway.</em></h2><p>Contact the host to ask about dates and the details that matter to you. An enquiry is a conversation, not a confirmed reservation.</p>
+      {contactLinks.length > 0 ? <div class="contact-options">{contactLinks.map((link) => { const Icon = contactIcon(link.label); return <a class="contact-option" href={link.url}><Icon size={22}/><span>{link.label}</span><ArrowUpRight size={18}/></a>; })}</div> : <div class="coming-soon"><span class="status-dot"></span><strong>We’re getting ready to welcome you.</strong><p>Host contact details will be added before launch. Reservations and enquiry submissions are not open on this preview.</p><a class="text-link" href={href('/cottage/')}>Get to know the cottage <ArrowUpRight size={18}/></a></div>}
+      {site.bookingUrl && <a class="button" href={site.bookingUrl}>Check availability <ArrowUpRight size={18}/></a>}
+    </div>
+    <div class="location-card"><div class="map-illustration" aria-hidden="true"><svg viewBox="0 0 500 340" fill="none"><path d="M-50 245C80 100 210 330 350 120S560 30 590 60M-40 285C80 140 210 370 350 160S560 70 590 100M-50 205C80 60 210 290 350 80S560-10 590 20M-50 165C80 20 210 250 350 40S560-50 590-20M-50 125C80-20 210 210 350 0S560-90 590-60M-50 85C80-60 210 170 350-40S560-130 590-100" stroke="currentColor"/><path d="M-50 325C80 180 210 410 350 200S560 110 590 140M-50 365C80 220 210 450 350 240S560 150 590 180M-50 405C80 260 210 490 350 280S560 190 590 220" stroke="currentColor"/></svg><div class="map-marker"><MapPin size={32} stroke-width={1.4}/><span>WAYANAD</span></div></div><div class="location-copy"><span class="eyebrow">FIND YOUR WAY</span><h3>Wayanad, Kerala</h3><p>{site.address || 'The exact cottage address and arrival directions will be shared here once confirmed.'}</p>{site.mapUrl && <a class="text-link" href={site.mapUrl} target="_blank" rel="noopener noreferrer">Open directions <ArrowUpRight size={17}/></a>}</div></div>
+  </section>
+  <section class="container section-space contact-checklist"><span class="eyebrow">WHEN YOU GET IN TOUCH</span><h2>A few details help.</h2><div class="facts-grid"><article><span class="number">01</span><h3>Your dates</h3><p>Preferred arrival, departure, and whether your plans are flexible.</p></article><article><span class="number">02</span><h3>Your people</h3><p>Number of adults and children, and any accessibility requirements.</p></article><article><span class="number">03</span><h3>Your questions</h3><p>Meals, facilities, pets, getting here, or anything else you’d like to confirm.</p></article></div></section>
+</Layout>

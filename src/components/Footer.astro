@@ -1,0 +1,16 @@
+---
+import Brand from './Brand.astro';
+import { nav, href, site, contactLinks } from '../data/site';
+import { ArrowUpRight, MapPin } from '@lucide/astro';
+---
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div><Brand/><p>A slower kind of stay.<br/>A little closer to nature.</p><span class="footer-location"><MapPin size={14}/> Wayanad, Kerala, India</span></div>
+    <div class="footer-links"><span class="eyebrow">Find your way</span>{nav.map(item => <a href={href(item.path)}>{item.label}</a>)}<a href={href('/contact/')}>Location & contact</a></div>
+    <div class="footer-contact"><span class="eyebrow">A change of pace</span><h2>Your next chapter,<br/><em>somewhere quieter.</em></h2><a class="text-link" href={href('/contact/')}>Let’s plan your stay <ArrowUpRight size={18}/></a>{contactLinks.slice(0,1).map(link => <a class="text-link" href={link.url}>{link.label}<ArrowUpRight size={16}/></a>)}</div>
+  </div>
+  <div class="container footer-bottom"><span>© {new Date().getFullYear()} {site.name}</span><span>Made for unhurried days.</span><a href={href('/privacy/')}>Privacy</a></div>
+</footer>
+{!site.live && <aside class="preview-notice" aria-label="Website preview notice">Design preview · Photography is for inspiration. Property details and contact information are being confirmed.</aside>}
+
+{contactLinks.length > 0 && <nav class="mobile-contact" aria-label="Quick contact">{contactLinks.slice(0, 2).map(link => <a href={link.url}>{link.label}<ArrowUpRight size={15}/></a>)}</nav>}

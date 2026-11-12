@@ -1,0 +1,43 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { ArrowUpRight, X, ArrowLeft, ArrowRight } from '@lucide/astro';
+import Layout from '../layouts/Layout.astro';
+import PageHeading from '../components/PageHeading.astro';
+import StayCTA from '../components/StayCTA.astro';
+import { gallery } from '../data/photos';
+const fullPhotos = await Promise.all(gallery.map(photo => getImage({ src: photo.src, width: 1800, format: 'webp' })));
+---
+<Layout title="Gallery" description="A visual mood board for Etern Destinations in Wayanad. Explore the inspiration behind the cottage retreat; actual property photographs are coming soon.">
+  <PageHeading label="A GLIMPSE OF THE FEELING" title="Picture a slower day." description="A visual mood board for what’s to come. These are inspiration photographs; actual cottage photographs will follow."/>
+  <section class="container gallery-section" aria-label="Inspiration photographs">
+    <div class="gallery-filters" role="group" aria-label="Filter photographs"><button class="filter-button active" data-filter="All" aria-pressed="true">All moments <span>06</span></button><button class="filter-button" data-filter="The stay" aria-pressed="false">The stay <span>02</span></button><button class="filter-button" data-filter="Surroundings" aria-pressed="false">Surroundings <span>04</span></button></div>
+    <div class="gallery-grid">{gallery.map((photo, index) => <figure data-category={photo.category}><a class="gallery-open" href={fullPhotos[index].src} data-index={index} data-alt={photo.alt} data-caption={photo.caption} aria-label={`View ${photo.caption.toLowerCase()}`}><Image src={photo.src} alt={photo.alt} widths={[400, 700, 1100]} sizes="(min-width: 700px) 45vw, 90vw" loading={index < 2 ? 'eager' : 'lazy'}/><span class="gallery-expand"><ArrowUpRight size={22}/></span></a><figcaption><span>{photo.caption}</span><span class="eyebrow">{photo.category}</span></figcaption></figure>)}</div>
+    <p class="muted gallery-disclaimer">All photographs shown here are placeholders, not images of Etern Destinations.</p>
+  </section>
+  <dialog class="lightbox" aria-labelledby="lightbox-caption"><div class="lightbox-top"><span>ETERN / INSPIRATION</span><button data-close aria-label="Close photograph"><X/></button></div><img src={fullPhotos[0].src} alt={gallery[0].alt} width="1800" height="1200" loading="lazy"/><div class="lightbox-bottom"><button data-prev aria-label="Previous photograph"><ArrowLeft/></button><p id="lightbox-caption"></p><button data-next aria-label="Next photograph"><ArrowRight/></button></div></dialog>
+  <StayCTA/>
+</Layout>
+<script>
+  const filters = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const figures = document.querySelectorAll<HTMLElement>('[data-category]');
+  filters.forEach(button => button.addEventListener('click', () => {
+    filters.forEach(filter => { const selected = filter === button; filter.classList.toggle('active', selected); filter.setAttribute('aria-pressed', String(selected)); });
+    figures.forEach(figure => { figure.hidden = button.dataset.filter !== 'All' && figure.dataset.category !== button.dataset.filter; });
+  }));
+  const dialog = document.querySelector<HTMLDialogElement>('.lightbox');
+  const image = dialog?.querySelector('img');
+  const caption = document.querySelector('#lightbox-caption');
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.gallery-open'));
+  let current = 0;
+  let opener: HTMLAnchorElement | undefined;
+  const visibleLinks = () => links.filter(link => !link.closest('figure')?.hidden);
+  function show(link: HTMLAnchorElement) { current = links.indexOf(link); if (image) { image.src = link.href; image.alt = link.dataset.alt || ''; } if (caption) caption.textContent = link.dataset.caption || ''; }
+  function move(direction: number) { const visible = visibleLinks(); const index = visible.indexOf(links[current]); show(visible[(index + direction + visible.length) % visible.length]); }
+  links.forEach(link => link.addEventListener('click', event => { if (!dialog?.showModal) return; event.preventDefault(); opener = link; show(link); dialog.showModal(); document.body.style.overflow = 'hidden'; }));
+  dialog?.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+  dialog?.querySelector('[data-prev]')?.addEventListener('click', () => move(-1));
+  dialog?.querySelector('[data-next]')?.addEventListener('click', () => move(1));
+  dialog?.addEventListener('keydown', event => { if (event.key === 'ArrowRight') move(1); if (event.key === 'ArrowLeft') move(-1); });
+  dialog?.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+  dialog?.addEventListener('close', () => { document.body.style.overflow = ''; opener?.focus(); });
+</script>
