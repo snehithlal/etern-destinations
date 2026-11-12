@@ -45,9 +45,18 @@ Select Node 26.x in Vercel build settings. Vercel manages minor/patch updates wi
 
 Static Astro requires no Vercel adapter. Vercel Hobby is restricted to personal/non-commercial use; this cottage business should use a suitable paid plan. Do not select Hobby simply because the code is static.
 
-## GitHub Pages compatibility
+## GitHub Pages: automatic preview deployment
 
-The included workflow is manually triggered and is not enabled to publish automatically. GitHub Pages has restrictions on business/transaction-oriented hosting; use it only where its terms permit. Cloudflare Pages is the production recommendation for this business.
+The Pages workflow deploys automatically whenever a commit is pushed or merged into `main`. You can also start it manually from the Actions tab. GitHub Pages has restrictions on business/transaction-oriented hosting; use it for a permitted personal preview. Cloudflare Pages remains the production recommendation for this business.
+
+One-time setup:
+
+1. Push the project, including `.github/workflows/`, to your GitHub repository on `main`.
+2. Open repository **Settings → Pages** and select **GitHub Actions** as the source.
+3. Open **Actions → Deploy preview to GitHub Pages → Run workflow** for the first deployment if Pages was enabled after the initial push. No URL inputs or custom secrets are required.
+4. Subsequent pushes to `main` build and publish automatically. The deployment job runs only if type checking, build and static tests succeed.
+
+The workflow reads the site origin and base path from `actions/configure-pages`, so the repository owner/name do not need to be hard-coded. It supports repository subfolders and root/custom-domain Pages configurations. `PUBLIC_SITE_LIVE=false` remains fixed for this preview workflow. Pull requests use the separate verification workflow and do not publish.
 
 For a project URL such as `https://OWNER.github.io/etern-destinations/`:
 
@@ -55,11 +64,13 @@ For a project URL such as `https://OWNER.github.io/etern-destinations/`:
 SITE_URL=https://OWNER.github.io BASE_PATH=/etern-destinations PUBLIC_SITE_LIVE=false npm run build
 ```
 
-For a root custom domain, use `BASE_PATH=/`. The workflow accepts both origin and base path as inputs, uploads `dist/`, and uses GitHub Actions deployment. In repository Settings → Pages, choose GitHub Actions before running it. Relative paths and nested routes must be checked on the actual host before release.
+For a local build targeting a root custom domain, use `BASE_PATH=/`. In GitHub Actions, these values come from the Pages configuration automatically. The workflow uploads `dist/` and uses the repository-provided `GITHUB_TOKEN` permissions for deployment. Verify relative paths and nested routes on the actual host after the first deployment.
+
+If the deployment waits for approval, check the repository’s `github-pages` environment protection settings. If the URL changes, update the Pages configuration and rerun deployment. The output uses the URL reported by GitHub; a custom domain must be configured there first.
 
 ## CI
 
-The build workflow runs type checking, root and nested-base builds, static link/SEO tests and browser tests. It does not publish a site. GitHub Pages publishing is a separate manual workflow.
+The build workflow runs type checking, root and nested-base builds, static link/SEO tests and browser tests. It does not publish a site. GitHub Pages publishing is a separate workflow triggered by pushes to `main` or manually. It runs its own type/build/static checks; the browser checks in the verification workflow are separate and do not gate publishing.
 
 ## Rollback and troubleshooting
 
@@ -73,3 +84,5 @@ The build workflow runs type checking, root and nested-base builds, static link/
 A build with indexing enabled and an example/local domain is rejected. This is only a guard against an obvious mistake; it does not replace the owner launch checklist.
 
 References: [Astro Vercel](https://docs.astro.build/en/guides/deploy/vercel/), [Astro GitHub Pages](https://docs.astro.build/en/guides/deploy/github/), [GitHub Pages restrictions](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits), [Vercel plans](https://vercel.com/pricing).
+
+Workflow metadata reference: [actions/configure-pages URL outputs](https://github.com/actions/configure-pages/blob/v5/action.yml).
