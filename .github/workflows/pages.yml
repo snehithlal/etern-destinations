@@ -1,16 +1,8 @@
-name: Deploy permitted preview to GitHub Pages
+name: Deploy preview to GitHub Pages
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      site_url:
-        description: 'Origin, e.g. https://OWNER.github.io (no repository path)'
-        required: true
-        type: string
-      base_path:
-        description: 'Repository prefix; use / for a root custom domain'
-        default: /etern-destinations
-        required: true
-        type: string
 permissions:
   contents: read
   pages: write
@@ -22,8 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SITE_URL: ${{ inputs.site_url }}
-      BASE_PATH: ${{ inputs.base_path }}
       PUBLIC_SITE_LIVE: 'false'
       ASTRO_TELEMETRY_DISABLED: '1'
     steps:
@@ -32,9 +22,15 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
+      - name: Read GitHub Pages URL configuration
+        id: pages
+        uses: actions/configure-pages@v5
       - run: npm ci
-      - run: npm run verify
-      - uses: actions/configure-pages@v5
+      - name: Check and build the site
+        run: npm run verify
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path || '/' }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
